@@ -112,6 +112,8 @@ struct Config
 	unsigned int mst4W;
 	unsigned int mst4H;
 
+    int mstCount;
+
 	char enable;
 	char debug;
 	char joinMST;
@@ -265,6 +267,7 @@ static void needConfig()
 	configLoaded = 1;
 
 	// Default settings
+    config.mstCount = 3;
 	config.mainX = 0;
 	config.mainY = 0;
 	config.mainW = 3840;
@@ -331,23 +334,23 @@ static bool fixMonitor(INT16* x, INT16* y, CARD16 *width, CARD16 *height)
 {
 	if (config.joinMST)
 	{
-		for (int n=0; n<maxMST; n++)
-			if (*mstConfigW[n])
-			{
-				if (*width  == *mstConfigW[n] / 2
-				 && *height == *mstConfigH[n]
-				 && *y      == *mstConfigY[n]) // Is MST panel?
-				{
-					if (*x == *mstConfigX[n]) // Left panel
-					{
-						*width = *mstConfigW[n]; // resize
-						//*height = 2160;
-					}
-					else
-					if (*x == (INT16)(*mstConfigX[n] + *mstConfigW[n] / 2)) // Right panel
-						*x = *y = *width = *height = 0; // disable
-				}
-			}
+		for (int n=0; n<maxMST; n++) {
+            log_debug2("mstConfigW[%i]: %i\n", n, *mstConfigW[n]);
+            log_debug2("x: %i, y: %i, w: %i, h: %i\n", *x, *y, *width, *height);
+            if (*mstConfigW[n]) {
+                if (*width == *mstConfigW[n] / config.mstCount
+                    && *height == *mstConfigH[n]
+                    && *y == *mstConfigY[n]) // Is MST panel?
+                {
+                    if (*x == *mstConfigX[n]) // Left panel
+                    {
+                        *width = *mstConfigW[n]; // resize
+                        //*height = 2160;
+                    } else if (*x == (INT16)(*mstConfigX[n] + *mstConfigW[n] / config.mstCount)) // Right panel
+                        *x = *y = *width = *height = 0; // disable
+                }
+            }
+        }
 	}
 
 	if (config.maskOtherMonitors)

@@ -6,6 +6,10 @@ all: lib
 
 lib: lib32/hax11.so lib64/hax11.so
 
+test: test.cpp Makefile
+	g++ -m64 -Wall -Wextra -g test.cpp -LX11 -lX11 -IX11 -o test_app
+	./test_app
+
 lib32:
 	mkdir lib32
 lib64:
