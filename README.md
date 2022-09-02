@@ -1,4 +1,9 @@
-# hax11
+# linux-eyefinity aka hax11 **mod**
+
+## Mod description
+This is a modded version of hax11 library, which changes 2-screen MST requirement into 3-screen MST allowing eyefinity-like configurations to work.
+
+## Original description
 
 Hackbrary to **H**ook and **A**ugment **X11** protocol calls.
 
